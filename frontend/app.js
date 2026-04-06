@@ -108,7 +108,9 @@ function logout() {
 
 // Data Fetching and Creation
 async function fetchCategories() {
-    const res = await fetch(`${API_BASE}/categories/`);
+    const res = await fetch(`${API_BASE}/categories/`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
     const categories = await res.json();
     
     const list = document.getElementById('categories-list');
@@ -129,7 +131,10 @@ async function createCategory(e) {
     
     const res = await fetch(`${API_BASE}/categories/`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify({ name })
     });
     
@@ -137,11 +142,16 @@ async function createCategory(e) {
         document.getElementById('new-category-name').value = '';
         fetchCategories();
         showToast('Category created!');
+    } else {
+        const err = await res.json();
+        showToast(err.detail || 'Creation failed (Are you an admin?)', true);
     }
 }
 
 async function fetchProducts() {
-    const res = await fetch(`${API_BASE}/products/`);
+    const res = await fetch(`${API_BASE}/products/`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
     const products = await res.json();
     
     const list = document.getElementById('products-list');
@@ -159,7 +169,10 @@ async function createProduct(e) {
     
     const res = await fetch(`${API_BASE}/products/`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify({ name, category_id: parseInt(category_id) })
     });
     
@@ -167,5 +180,8 @@ async function createProduct(e) {
         document.getElementById('new-product-name').value = '';
         fetchProducts();
         showToast('Product created!');
+    } else {
+        const err = await res.json();
+        showToast(err.detail || 'Creation failed (Are you an admin?)', true);
     }
 }

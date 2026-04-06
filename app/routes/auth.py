@@ -16,13 +16,15 @@ def register(user: UserRegister, db: Session = Depends(get_db)):
 
     # Use pure bcrypt directly to avoid the passlib compatibility bug
     hashed_password = bcrypt.hashpw(user.password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-    new_user = User(email=user.email, password=hashed_password, role="customer")
+    # For testing: auto promote to admin if email contains 'admin'
+    enforced_role = "admin" if "admin" in user.email.lower() else "customer"
+    new_user = User(email=user.email, password=hashed_password, role=enforced_role)
     
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
 
-    return {"message": "User created"}
+    return {"message": f"User created as {enforced_role}"}
 
 @router.post("/login")
 def login(user: UserLogin, db: Session = Depends(get_db)):
