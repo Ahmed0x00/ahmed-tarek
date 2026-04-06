@@ -17,8 +17,19 @@ if (token) {
 
 function switchAuth(mode) {
     currentMode = mode;
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
+    
+    // Reset all tabs
+    const buttons = document.querySelectorAll('.tab-btn');
+    buttons[0].classList.remove('active');
+    buttons[1].classList.remove('active');
+    
+    // Set active tab without using global event
+    if (mode === 'login') {
+        buttons[0].classList.add('active');
+    } else {
+        buttons[1].classList.add('active');
+    }
+    
     authSubmitBtn.textContent = mode === 'login' ? 'Login' : 'Register';
     authError.classList.add('hidden');
 }
@@ -69,6 +80,7 @@ async function handleAuth(e) {
             document.querySelector('.tab-btn:last-child').classList.remove('active');
         }
     } catch (err) {
+        console.error(err);
         authError.textContent = 'Network error. Make sure backend is running.';
         authError.classList.remove('hidden');
     }
@@ -108,7 +120,7 @@ function logout() {
 
 // Data Fetching and Creation
 async function fetchCategories() {
-    const res = await fetch(`${API_BASE}/categories/`, {
+    const res = await fetch(`${API_BASE}/categories`, {
         headers: { 'Authorization': `Bearer ${token}` }
     });
     const categories = await res.json();
@@ -129,7 +141,7 @@ async function createCategory(e) {
     e.preventDefault();
     const name = document.getElementById('new-category-name').value;
     
-    const res = await fetch(`${API_BASE}/categories/`, {
+    const res = await fetch(`${API_BASE}/categories`, {
         method: 'POST',
         headers: { 
             'Content-Type': 'application/json',
@@ -149,7 +161,7 @@ async function createCategory(e) {
 }
 
 async function fetchProducts() {
-    const res = await fetch(`${API_BASE}/products/`, {
+    const res = await fetch(`${API_BASE}/products`, {
         headers: { 'Authorization': `Bearer ${token}` }
     });
     const products = await res.json();
@@ -167,7 +179,7 @@ async function createProduct(e) {
     const name = document.getElementById('new-product-name').value;
     const category_id = document.getElementById('new-product-category').value;
     
-    const res = await fetch(`${API_BASE}/products/`, {
+    const res = await fetch(`${API_BASE}/products`, {
         method: 'POST',
         headers: { 
             'Content-Type': 'application/json',
