@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
-from passlib.hash import bcrypt
+import bcrypt
 from schemas.user import UserRegister, UserLogin
 from models.user import User
 from database import get_db
@@ -14,7 +14,8 @@ def register(user: UserRegister, db: Session = Depends(get_db)):
     if db_user:
         raise HTTPException(status_code=400, detail="Email already exists")
 
-    hashed_password = bcrypt.hash(user.password)
+    # Use pure bcrypt directly to avoid the passlib compatibility bug
+    hashed_password = bcrypt.hashpw(user.password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
     new_user = User(email=user.email, password=hashed_password, role="customer")
     
     db.add(new_user)
@@ -29,7 +30,7 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    if not bcrypt.verify(user.password, db_user.password):
+    if not bcrypt.checkpw(user.password.encode('utf-8'), db_user.password.encode('utf-8')):
         raise HTTPException(status_code=400, detail="Wrong password")
 
     token = create_jwt({"user_id": db_user.id, "role": db_user.role})

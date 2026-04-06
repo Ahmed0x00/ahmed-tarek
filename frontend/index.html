@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="video-bg"></div>
+    <div class="glass-container">
+        <header>
+            <h1>E-Commerce API Tester</h1>
+            <div id="user-info" class="hidden">
+                <span id="user-email"></span>
+                <button id="logout-btn" class="btn btn-outline" onclick="logout()">Logout</button>
+            </div>
+        </header>
+
+        <!-- Auth Section -->
+        <section id="auth-section" class="card">
+            <h2>Authentication</h2>
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchAuth('login')">Login</button>
+                <button class="tab-btn" onclick="switchAuth('register')">Register</button>
+            </div>
+            
+            <form id="auth-form" onsubmit="handleAuth(event)">
+                <div class="input-group">
+                    <input type="email" id="email" required placeholder=" " />
+                    <label for="email">Email</label>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="password" required placeholder=" " />
+                    <label for="password">Password</label>
+                </div>
+                <div id="auth-error" class="error-msg hidden"></div>
+                <button type="submit" class="btn btn-primary" id="auth-submit">Login</button>
+            </form>
+        </section>
+
+        <!-- Main Dashboard Section -->
+        <section id="dashboard-section" class="hidden">
+            <div class="dashboard-grid">
+                
+                <!-- Categories Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Categories</h2>
+                        <button class="btn btn-sm btn-primary" onclick="fetchCategories()">Refresh</button>
+                    </div>
+                    <form id="add-category-form" onsubmit="createCategory(event)" class="inline-form">
+                        <input type="text" id="new-category-name" placeholder="New category name" required>
+                        <button type="submit" class="btn btn-sm btn-success">+</button>
+                    </form>
+                    <ul id="categories-list" class="item-list"></ul>
+                </div>
+
+                <!-- Products Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Products</h2>
+                        <button class="btn btn-sm btn-primary" onclick="fetchProducts()">Refresh</button>
+                    </div>
+                    <form id="add-product-form" onsubmit="createProduct(event)" class="stacked-form">
+                        <input type="text" id="new-product-name" placeholder="Product name" required>
+                        <select id="new-product-category" required>
+                            <option value="">Select Category</option>
+                        </select>
+                        <button type="submit" class="btn btn-sm btn-success">Add Product</button>
+                    </form>
+                    <ul id="products-list" class="item-list"></ul>
+                </div>
+
+            </div>
+        </section>
+    </div>
+    
+    <!-- Notification Toast -->
+    <div id="toast" class="toast hidden"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
