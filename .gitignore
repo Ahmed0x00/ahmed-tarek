@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.sql
+*.db
+ecommerce.db
+.venv/
+venv/
+env/
+.env
